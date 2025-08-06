@@ -2,6 +2,7 @@
 
 namespace Outhebox\TranslationsUI\Http\Controllers;
 
+use Flexmind\Ai\Data\AiAgents\OpenAiTranslateAgent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,21 +82,29 @@ class PhraseController extends BaseController
             return redirect()->route('ltu.source_translation.edit', $phrase->uuid);
         }
 
+        $suggestedTranslations = [];
+        foreach (config('translations.suggest_providers', []) as $driverClass) {
+            /** @var TranslationSuggestionDriverInterface $driver */
+            $driver = app($driverClass);
+
+            $suggestedTranslations[$driver->id()] = [
+                'id' => $driver->id(),
+                'icon' => $driver->icon(),
+                'engine' => $driver->engine(),
+                'value' => $driver
+                    ->preserveParameters()
+                    ->setSource($phrase->source->translation->language->code)
+                    ->setTarget($translation->language->code)
+                    ->translate($phrase->source->value ?? ""),
+            ];
+        }
+
         return Inertia::render('phrases/edit', [
             'phrase' => PhraseResource::make($phrase),
             'translation' => TranslationResource::make($translation),
             'source' => TranslationResource::make(Translation::where('source', true)?->first()),
             'similarPhrases' => PhraseResource::collection($phrase->similarPhrases()),
-            'suggestedTranslations' => [
-                'google' => [
-                    'id' => 'google',
-                    'engine' => 'Google Translate',
-                    'value' => (new GoogleTranslate)->preserveParameters()
-                        ->setSource($phrase->source->translation->language->code)
-                        ->setTarget($translation->language->code)
-                        ->translate($phrase->source->value),
-                ],
-            ],
+            'suggestedTranslations' => $suggestedTranslations
         ]);
     }
 

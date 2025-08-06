@@ -75,4 +75,9 @@ return [
     'exclude_files' => [
         // 'validation.php', // Exclude default validation for example.
     ],
+
+    'suggest_providers' => [
+        \Outhebox\TranslationsUI\Providers\GoogleTranslate::class,
+        \Outhebox\TranslationsUI\Providers\OpenAiTranslate::class
+    ]
 ];

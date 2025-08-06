@@ -23,6 +23,8 @@
         "php": "^8.2|^8.3",
         "brick/varexporter": "^0.6.0",
         "inertiajs/inertia-laravel": "^2.0",
+        "openai-php/client": "^0.14",
+        "patrickschur/language-detection": "^5.3",
         "spatie/laravel-package-tools": "^1.0",
         "stichoza/google-translate-php": "^5.0",
         "tightenco/ziggy": "^2.5",

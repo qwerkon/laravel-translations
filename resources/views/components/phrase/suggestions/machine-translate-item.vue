@@ -48,8 +48,6 @@ onMounted(() => {
     <div class="flex flex-wrap divide-x">
         <div class="px-4 py-3 md:w-64">
             <div class="mt-2 flex items-center">
-                <IconGoogle class="mr-2 size-4 text-gray-500" />
-
                 <div class="text-sm font-medium text-gray-700" v-text="phrase.engine"></div>
             </div>
         </div>
